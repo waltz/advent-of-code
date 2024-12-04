@@ -52,9 +52,6 @@ func main() {
 	firstSlice.Sort()
 	secondSlice.Sort()
 
-	// first_list = deduplicate(firstSlice)
-	// second_list = deduplicate(secondSlice)
-
 	fmt.Println("sorted and deduped arrays", len(first_list), len(second_list))
 
 	var finalDistance int = 0
@@ -75,30 +72,10 @@ func main() {
 			distance = -distance
 		}
 
-		// if index > (len(second_list) - 1) {
-		// 	distance = 0
-		// }
-
 		finalDistance = finalDistance + distance
 
 		fmt.Println("got numbers", index, firstNumber, secondIndex, secondNumber, distance)
 	}
 
 	fmt.Println("finished", finalDistance)
-}
-
-func deduplicate(input []int) []int {
-	if len(input) == 0 {
-		return input
-	}
-
-	result := []int{input[0]}
-
-	for _, v := range input[1:] {
-		if v != result[len(result)-1] {
-			result = append(result, v)
-		}
-	}
-
-	return result
 }
