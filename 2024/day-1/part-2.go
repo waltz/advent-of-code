@@ -4,18 +4,17 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"sort"
 	"strconv"
 	"strings"
 )
 
 func main() {
-	first_list := []int{}
-	second_list := []int{}
+	firstList := []int{}
+	secondList := []int{}
 
 	// read the file
-	file, err := os.Open("input.txt")
-	// file, err := os.Open("input-test.txt")
+	// file, err := os.Open("input.txt")
+	file, err := os.Open("input-2-test.txt")
 	if err != nil {
 		fmt.Println("There was a problem reading the file.")
 		return
@@ -31,14 +30,14 @@ func main() {
 			fmt.Println("error converting the first number")
 			return
 		}
-		first_list = append(first_list, first_number)
+		firstList = append(firstList, first_number)
 
 		second_number, err := strconv.Atoi(numbers[1])
 		if err != nil {
 			fmt.Println("error converting the second number", err)
 			return
 		}
-		second_list = append(second_list, second_number)
+		secondList = append(secondList, second_number)
 
 		if err := scanner.Err(); err != nil {
 			fmt.Println("there was an issue reading a line")
@@ -46,36 +45,34 @@ func main() {
 		}
 	}
 
-	firstSlice := sort.IntSlice(first_list)
-	secondSlice := sort.IntSlice(second_list)
+	// create a map of numbers and occurrences from the second list
+	secondListOccurrences := make(map[int]int)
 
-	firstSlice.Sort()
-	secondSlice.Sort()
+	for _, number := range secondList {
+		occurrencesForValue, exists := secondListOccurrences[number]
 
-	fmt.Println("sorted and deduped arrays", len(first_list), len(second_list))
-
-	var finalDistance int = 0
-
-	for index, firstNumber := range first_list {
-		var secondIndex = 0
-
-		if index > (len(second_list) - 1) {
-			secondIndex = len(second_list) - 1
+		if !exists {
+			secondListOccurrences[number] = 1
 		} else {
-			secondIndex = index
+			secondListOccurrences[number] = occurrencesForValue + 1
 		}
-
-		var secondNumber = second_list[secondIndex]
-		var distance = firstNumber - secondNumber
-
-		if distance < 0 {
-			distance = -distance
-		}
-
-		finalDistance = finalDistance + distance
-
-		fmt.Println("got numbers", index, firstNumber, secondIndex, secondNumber, distance)
 	}
 
-	fmt.Println("finished", finalDistance)
+	fmt.Println("occurrences", secondListOccurrences)
+
+	var similarityScore = 0
+
+	for _, number := range firstList {
+		occurrences, exists := secondListOccurrences[number]
+
+		var multiplier = 0
+
+		if exists {
+			multiplier = occurrences
+		}
+
+		similarityScore = similarityScore + (number * multiplier)
+	}
+
+	fmt.Println("finished", similarityScore)
 }
